@@ -2,6 +2,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser');
 require('dotenv').config();
+const app = express()
 
 
 const password = process.env.PASSWORD;
@@ -11,6 +12,7 @@ const uri = "mongodb+srv://suryakantsharma84:bksurya128086@cluster0.mauoshz.mong
 
 // Connect to the database
 mongoose.connect(uri)
+app.use(bodyParser.urlencoded({extented: false}));
 
 // Check if the connection is successful
 const db = mongoose.connection
@@ -48,11 +50,6 @@ const Excercise = mongoose.model('exercise', exercise);
 // Export the database connection
 module.exports = db
 
-
-const app = express()
-// Use the body-parser middleware to parse JSON requests
-app.use(bodyParser.json());
-
 const cors = require('cors')
 require('dotenv').config()
 
@@ -73,13 +70,6 @@ app.post('/api/users', (req, res) => {
    .catch((err) => {
     res.status(500).send(err.message)
   });
-
-  //  newUser.save((err, user) => {
-  //    if (err) {
-  //     res.status(500).send(err.message)
-  //    }
-  //     res.status(201).send(user)
-  //  })
 }); 
 
 
@@ -88,3 +78,4 @@ app.post('/api/users', (req, res) => {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+
