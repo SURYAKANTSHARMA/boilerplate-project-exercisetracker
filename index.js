@@ -72,7 +72,32 @@ app.post('/api/users', (req, res) => {
   });
 }); 
 
-
+app.post('/api/users/:_id/exercises', (req, res) => { 
+  const user = User.findOne(
+    {_id: req.params._id })
+    .then((user) => { 
+      const newExercise = new Excercise(
+        {
+          userId: req.params._id, 
+          description: req.body.description,
+          duration: req.body.duration,
+          date: req.body.date,
+        }
+      )
+      newExercise.save() 
+      .then((exercise) => { 
+       res.status(201).send(exercise)
+      })
+      .catch((err) => {
+       res.status(500).send(err.message)
+     });    
+    })
+    .catch((err)=> {
+      console.error(err);
+      res.status(500).send(err.message);
+    })
+    
+  })
 
 
 const listener = app.listen(process.env.PORT || 3000, () => {
