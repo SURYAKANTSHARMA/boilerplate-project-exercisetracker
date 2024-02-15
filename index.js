@@ -6,9 +6,11 @@ require('dotenv').config();
 
 const password = process.env.PASSWORD;
 const email = process.env.EMAIL;
+//const uri = `mongodb+srv://suryakantsharma84:${password}@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority`;
+const uri = "mongodb+srv://suryakantsharma84:bksurya128086@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority";
 
 // Connect to the database
-mongoose.connect('mongodb+srv://${email}:${password}@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority')
+mongoose.connect(uri)
 
 // Check if the connection is successful
 const db = mongoose.connection
@@ -64,13 +66,20 @@ app.post('/api/users', (req, res) => {
    const newUser = new User(
      { username: req.body.username }
    )
-
-   newUser.save((err, user) => {
-     if (err) {
-      res.status(500).send(errr)
-     }
-      res.status(201).send(user)
+   newUser.save() 
+   .then((user) => { 
+    res.status(201).send(user)
    })
+   .catch((err) => {
+    res.status(500).send(err.message)
+  });
+
+  //  newUser.save((err, user) => {
+  //    if (err) {
+  //     res.status(500).send(err.message)
+  //    }
+  //     res.status(201).send(user)
+  //  })
 }); 
 
 
