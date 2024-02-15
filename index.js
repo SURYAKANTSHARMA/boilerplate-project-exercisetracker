@@ -7,8 +7,7 @@ const app = express()
 
 const password = process.env.PASSWORD;
 const email = process.env.EMAIL;
-//const uri = `mongodb+srv://suryakantsharma84:${password}@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority`;
-const uri = "mongodb+srv://suryakantsharma84:bksurya128086@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${email}:${password}@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority`;
 
 // Connect to the database
 mongoose.connect(uri)
@@ -99,6 +98,13 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     
   })
 
+  app.get('/api/users/:_id/logs', (req, res) => {
+    const { _id } = req.params;
+    const { from, to, limit } = req.query;
+    if (!from && !to && !limit) {
+      Excercise.find(id)
+    }
+  })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
