@@ -79,7 +79,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
       const newExercise = new Excercise({
         description: req.body.description,
         duration: req.body.duration,
-        date: req.body.date,
+        date: dateCheck(req.body.date),
       });
       newExercise.save()
         .then((exercise) => {
@@ -88,6 +88,7 @@ app.post('/api/users/:_id/exercises', (req, res) => {
           user.save()
             .then(() => {
               const customDate = new Date(exercise.date).toDateString();
+            
               const customResponse = {
                 _id: user._id,
                 username: user.username,
@@ -120,6 +121,7 @@ app.get('/api/users', (req, res) => {
       res.status(500).json({ error: 'Unable to fetch users.' });
     });
 })
+var dateCon = (input) => {return new Date(input).toISOString().slice(0,10)}
 
 app.get('/api/users/:_id/logs', (req, res) => {
   const { _id } = req.params;
@@ -142,17 +144,20 @@ app.get('/api/users/:_id/logs', (req, res) => {
       }
       const formattedExcercises = exercises.map((exercise) => {
         return {
-          date: new Date(exercise.date).toDateString(),
+          date: dateCheck(exercise.date),
           description: exercise.description,
           duration: exercise.duration
         };
       });
+
       const filteredUser = {
         _id: user._id,
         username: user.username,
         log: formattedExcercises,
         count: user.count
       };
+      filteredUser.log.map(a => console.log(typeof(a.date)))
+
       res.status(200).send(filteredUser);
     })
     .catch((err) => {
@@ -160,6 +165,16 @@ app.get('/api/users/:_id/logs', (req, res) => {
       res.status(500).send(err.message);
     });
 });
+
+
+const defDate = new Date().toDateString();
+var dateCheck = (input) => {
+  if (!input || isNaN(Date.parse(input))) {
+    return defDate;
+  } else {
+    return new Date(input).toDateString();
+  }
+}
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
