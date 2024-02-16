@@ -143,14 +143,15 @@ app.get('/api/users/:_id/logs', (req, res) => {
       const formattedExcercises = exercises.map((exercise) => {
         return {
           date: new Date(exercise.date).toDateString(),
-          "description": exercise.description,
-         "duration": exercise.duration
+          description: exercise.description,
+          duration: exercise.duration
         };
       });
       const filteredUser = {
         _id: user._id,
         username: user.username,
-        logs: formattedExcercises,
+        log: formattedExcercises,
+        count: user.count
       };
       res.status(200).send(filteredUser);
     })
