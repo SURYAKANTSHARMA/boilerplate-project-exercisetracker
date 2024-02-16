@@ -8,6 +8,7 @@ const app = express()
 const password = process.env.PASSWORD;
 const email = process.env.EMAIL;
 const uri = `mongodb+srv://${email}:${password}@cluster0.mauoshz.mongodb.net/?retryWrites=true&w=majority`;
+console.log(uri);
 
 // Connect to the database
 mongoose.connect(uri)
@@ -102,8 +103,26 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     const { _id } = req.params;
     const { from, to, limit } = req.query;
     if (!from && !to && !limit) {
-      Excercise.find(id)
+       Excercise.find({ userId: _id, date: { $gte: new Date(from), $lte: new Date(to) } })
+       .sort( { date: 1 })
+       .limit(parseInt(limit))
+       .then((exercises) => {
+        res.status(200).send(exercises)
+       })
+       .catch((err)=> {
+       console.error(err);
+       res.status(500).send(err.message);
+      })
     }
+
+    Excercise.find( { userId: _id })
+     .then((exercises) => {
+       res.status(200).send(exercises)
+     }).catch((err)=> {
+      console.error(err);
+      res.status(500).send(err.message);
+    })
+    
   })
 
 const listener = app.listen(process.env.PORT || 3000, () => {
