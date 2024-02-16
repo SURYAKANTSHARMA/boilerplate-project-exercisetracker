@@ -99,6 +99,16 @@ app.post('/api/users/:_id/exercises', (req, res) => {
     
   })
 
+  app.get('/api/users', (req, res) => {
+       User.find({})
+       .then((users) => {
+        res.status(200).json(users);
+      })
+      .catch((error) => {
+        res.status(500).json({ error: 'Unable to fetch users.' });
+      });
+  })
+
   app.get('/api/users/:_id/logs', (req, res) => {
     const { _id } = req.params;
     const { from, to, limit } = req.query;
