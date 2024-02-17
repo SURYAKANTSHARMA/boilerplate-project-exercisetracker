@@ -133,14 +133,21 @@ app.get('/api/users/:_id/logs', (req, res) => {
       let exercises = user.logs;
 
       // Apply filtering if `from`, `to`, and `limit` query parameters are provided
-      if (from && to && limit) {
-        const fromDate = new Date(from);
-        const toDate = new Date(to);
-        exercises = exercises.filter((exercise) => {
-          const exerciseDate = new Date(exercise.date); // Convert exercise.date to Date object
-          return exerciseDate >= fromDate && exerciseDate <= toDate;
-        });
-        exercises = exercises.slice(0, parseInt(limit));
+      if (from || to || limit) {
+
+        if (from) {
+          const fromDate = new Date(from);
+          exercises = exercises.filter((exercise) => new Date(exercise.date) >= fromDate);
+        }
+
+        if (to) {
+          const toDate = new Date(to);
+          exercises = exercises.filter((exercise) => new Date(exercise.date) <= toDate);
+        }
+        if (limit) {
+          const parsedLimit = parseInt(limit);
+          exercises = exercises.slice(0, parsedLimit);
+        }
       }
       const formattedExcercises = exercises.map((exercise) => {
         return {
